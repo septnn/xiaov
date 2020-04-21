@@ -24,9 +24,6 @@ class xv_wav:
         body = head + body
         return body
 
-
-
-
 # wav head格式化
 # 参见 (https://docs.python.org/zh-cn/3/library/struct.html?highlight=struct#)
 # print(struct.unpack('<4s', bytes(blob[:4]))) # ‘RIFF‘文件标志

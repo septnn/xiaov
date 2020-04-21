@@ -6,45 +6,38 @@ import base64
 
 from snowboy import snowboydecoder
 
-
 class xv_kws:
-    wav = None
-    kws = None
-    model = None
-
-    audio_frames = {}
-    """语音帧
-    大概1s/12帧，安每秒的list存入dict内
-    {"":["","","","","","","","","","","","",""],"":["","","","","","","","","","","","",""]......}
-    """
-
-    audio_seconds = {}
-    """ 需要识别语音片段，每秒一个dict元素
-    {"":"", "":""}
-    """
 
     def __init__(self, model = None):
         self.wav = xv_wav()
-        logging.info('loaded wav')
+        """ self.audio_frames 语音帧
+        大概1s/12帧，安每秒的list存入dict内 {"":["","","","","","","","","","","","",""],"":["","","","","","","","","","","","",""]......} """
+        self.audio_frames = {}
+        """ self.audio_seconds 需要识别语音片段，每秒一个dict元素 {"":"", "":""} """
+        self.audio_seconds = {}
         if model is None:
             self.model = 'snowboy'
         if self.model == 'snowboy':
+            # 识别模型 snowboy
             logging.info('loaded snowboy')
-            # 初始化snowboy
             sensitivity = 0.5
             model_file = '/home/app/xiaov/snowboy/xiaov.pmdl'
             self.kws = snowboydecoder.HotwordDetector(model_file, sensitivity=sensitivity)
     
     def detect(self, data):
+        """ 识别 """
         if self.model == 'snowboy':
             return self.kws.detector.RunDetection(data)
         return False
     
-    async def request(self, params):
-        """
+    async def main(self, params):
+        """ 语音唤醒主流程
         接收语音片段，大约1秒上传12次回调
         上传的语音，会有先后顺序乱、丢包丢帧等问题，需要前端生产顺序
         接收语音，进行拼接，拼接1s语音
+
+        param params: 帧数据，{uuid:uuid, id:id, blob:base64} 
+                      参数说明 uuid:当前1秒时间戳,id:当前帧顺序数字1-12,blob:wav二进制转base64数据
         """
         logging.debug('request')
         
@@ -77,7 +70,6 @@ class xv_kws:
         if await self.recognition(self.audio_seconds):
             return True
         return False
-    
 
     async def recognition(self, audio_seconds):
         # 提取s语音片段，并识别
