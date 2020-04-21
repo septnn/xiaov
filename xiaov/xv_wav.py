@@ -1,3 +1,30 @@
+import struct
+
+class xv_wav:
+
+    def join(self, frams = []):
+        """ 合并wav二进制
+
+        param frams: 有序的语音帧二进制
+        """
+        # 合并语音片段
+        body = bytes()
+        head = bytes()
+        # 循环排序后的语音片段
+        for item in frams:
+            if len(head) == 0:
+                # 获取语音片段二进制的head头信息
+                head = item[:44]
+            # 拼接语音片段的二进制数据
+            body = body + item[44:]
+        # 更新WAV文件的总byte数，两个文件数据帧和+44
+        head = head[:4] + struct.pack('<I', len(body)+44) + head[8:]
+        head = head[:40] + struct.pack('<I', len(body)) + head[44:]
+        # 拼接head头信息和body帧数据
+        body = head + body
+        return body
+
+
 
 
 # wav head格式化
