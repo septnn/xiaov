@@ -1,8 +1,6 @@
 import logging
 from xv_wav import xv_wav
-
-import asyncio
-import base64
+import asyncio, base64
 
 from snowboy import snowboydecoder
 

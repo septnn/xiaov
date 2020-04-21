@@ -20,4 +20,4 @@ RUN apt remove -y openssl
 
 EXPOSE 8140-8150
 
-# ENTRYPOINT ["/home/app/sh/run.sh"]
+ENTRYPOINT ["/home/app/sh/run.sh"]

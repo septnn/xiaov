@@ -1,10 +1,7 @@
 import logging
 from xv_wb import xv_wb
 from xv_kws import xv_kws
-
-import json
-import asyncio
-
+import json, asyncio
 
 # 默认日志
 logging.getLogger().setLevel(logging.INFO)
